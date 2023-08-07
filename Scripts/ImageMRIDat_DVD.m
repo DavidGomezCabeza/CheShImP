@@ -22,7 +22,7 @@ function varargout = ImageMRIDat_DVD(varargin)
 
 % Edit the above text to modify the response to help ImageMRIDat_DVD
 
-% Last Modified by GUIDE v2.5 10-Jul-2023 11:39:49
+% Last Modified by GUIDE v2.5 21-Jul-2023 12:41:20
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -460,8 +460,13 @@ imm.YData = [1   800];
             impix = size(handles.GUIDataAll.MRIImage);
 %             PosGen = handles.GUIDataAll.PosGen;
 
-            xb = ([0 FOVSizeCSI(2) FOVSizeCSI(2) 0]+PosGen(1))*impix(1)/handles.GUIDataAll.MRIImageSize(1);
-            yb = ([0 0 FOVSizeCSI(3) FOVSizeCSI(3)]+PosGen(2))*impix(2)/handles.GUIDataAll.MRIImageSize(2);
+            if impix(1) == impix(2)
+                xb = ([0 FOVSizeCSI(2) FOVSizeCSI(2) 0]+PosGen(1))*impix(1)/handles.GUIDataAll.MRIImageSize(1);
+                yb = ([0 0 FOVSizeCSI(3) FOVSizeCSI(3)]+PosGen(2))*impix(2)/handles.GUIDataAll.MRIImageSize(2);
+            else
+                yb = ([0 FOVSizeCSI(2) FOVSizeCSI(2) 0]+PosGen(1))*impix(1)/handles.GUIDataAll.MRIImageSize(1);
+                xb = ([0 0 FOVSizeCSI(3) FOVSizeCSI(3)]+PosGen(2))*impix(2)/handles.GUIDataAll.MRIImageSize(2);
+            end
             
             handles = guidata(hObject);
             handles.GUIDataAll.xIndCut = max([min(yb) 1]):max(yb);
@@ -817,7 +822,6 @@ function pushbutton3_Callback(hObject, eventdata, handles)
                 copyfile(join([foldpath, '\pdata\1\', filess(k).name],''), join([foldpath, '\', filess(k).name],''))
             end
         end
-
 
         kdataObj = CKDataObjectIMAGE(foldpath);
         kdataObj = kdataObj.readReco;
@@ -1942,7 +1946,7 @@ if handles.togglebutton4.Value == 1
     handles = guidata(hObject);
     handles.togglebutton4.Value = 0;
     handles.togglebutton4.BackgroundColor = [0.9400    0.9400    0.9400];
-%     togglebutton4_Callback(hObject, [], handles)
+%     togglebutton4_Callback(hObject, [], handles);
     guidata(hObject, handles);
 end
 
@@ -2007,4 +2011,3 @@ function radiobutton4_Callback(hObject, eventdata, handles)
 
 
 togglebutton5_Callback(hObject, [], handles)
-
