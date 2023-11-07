@@ -6,7 +6,7 @@ CheShImP is a program to process Chemical Shift Images (CSI) from Magnetic Reson
 
 ## Installation
 
-For non matlab users, the program (and its GUI) can be installed using the [**CheShImPInstaller_web.exe**](https://github.com/DavidGomezCabeza/CheShImP/tree/main/CheShImP/for_redistribution) executable file intended for redistribution. \
+For non matlab users, the program (and its GUI) can be installed using the [**CheShImPInstaller_web.exe**](https://github.com/DavidGomezCabeza/CheShImP/tree/main/CheShImP/for_redistribution) executable file intended for redistribution. 
 
 Matlab users can access to the source code located in the directory [**Scripts**](https://github.com/DavidGomezCabeza/CheShImP/tree/main/Scripts). In there, executing the main script **ImageMRIDat_DVD.m** starts the CheShImP GUI. 
 
@@ -15,4 +15,4 @@ Matlab users can access to the source code located in the directory [**Scripts**
   ### 1.- 
 
 ## References
-  **1.- **
+  **1.- ds** sasa \
