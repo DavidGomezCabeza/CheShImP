@@ -69,6 +69,7 @@ function genSpectraAllColorGrid(FDat, tf, foldpath)
 
         saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'.png'], ''))
         saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'.fig'], ''))
+        saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'.svg'], ''))
         
         close(ff)
         

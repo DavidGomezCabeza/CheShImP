@@ -31,7 +31,6 @@ function genOverlayPythonScript(foldpath, tf)
                       'plt.yticks([]) \n']);
     
         fprintf(fil, ['plt.savefig(r''', strrep( foldpath , '\' , '/' ) , 'tmp_img/MRICSIOverlay_',num2str(tf),'.png'', bbox_inches=''tight'', pad_inches=0) \n']);
-    
         fclose(fil);
 
     end

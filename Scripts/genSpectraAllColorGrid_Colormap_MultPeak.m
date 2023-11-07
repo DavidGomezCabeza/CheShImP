@@ -1,7 +1,8 @@
 
 
-function [namfil] = genSpectraAllColorGrid_Colormap_MultPeak(FDat, tf, foldpath, ppms)
+function [namfil] = genSpectraAllColorGrid_Colormap_MultPeak(FDat, tf, foldpath, ppms, satp)
 
+    sat = (100-satp)/100;
 
     prompt = {'R- Min PPM Peak 1:','R- Max PPM Peak 1:', 'G- Min PPM Peak 2:','G- Max PPM Peak 2:', 'B- Min PPM Peak 3:','B- Max PPM Peak 3:'};
     dlgtitle = 'Ranges';
@@ -9,33 +10,33 @@ function [namfil] = genSpectraAllColorGrid_Colormap_MultPeak(FDat, tf, foldpath,
     definput = {'0','0','0','0','0','0'};
     answer = inputdlg(prompt,dlgtitle,dims,definput);
 
-    namfil = join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'_RGB_',join(answer(:), '-'),'.png'], '');
+    namfil = join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'_Sat',string(satp),'_RGB_',join(answer(:), '-'),'.png'], '');
 
-    if ~isfile(join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'_RGB_',join(answer(:), '-'),'.fig'], ''))
+    if ~isfile(join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'_Sat',string(satp),'_RGB_',join(answer(:), '-'),'.fig'], ''))
         
-
+        FDatTP = FDat(:,:,:,1,1,1,tf);
         
-        FDatSiz = size(FDat);
+        FDatSiz = size(FDatTP);
 
         if str2num(answer{1}) == 0 && str2num(answer{2}) == 0
             FDatMaxs1 = zeros(1,FDatSiz(2), FDatSiz(3));
         else
-            xx = max(FDat(length(ppms(ppms >= str2num(answer{2})))+1:length(ppms(ppms >= str2num(answer{1})))+1,:,:));
-            FDatMaxs1 = round(255*(xx)/(max(xx(:))));
+            xx = max(FDatTP(length(ppms(ppms >= str2num(answer{2})))+1:length(ppms(ppms >= str2num(answer{1})))+1,:,:));
+            FDatMaxs1 = round(255*(xx)/(max(xx(:))*sat));
         end
 
         if str2num(answer{3}) == 0 && str2num(answer{4}) == 0
             FDatMaxs2 = zeros(1,FDatSiz(2), FDatSiz(3));
         else
-            yy = max(FDat(length(ppms(ppms >= str2num(answer{4})))+1:length(ppms(ppms >= str2num(answer{3})))+1,:,:));
-            FDatMaxs2 = round(255*(yy)/(max(yy(:))));
+            yy = max(FDatTP(length(ppms(ppms >= str2num(answer{4})))+1:length(ppms(ppms >= str2num(answer{3})))+1,:,:));
+            FDatMaxs2 = round(255*(yy)/(max(yy(:))*sat));
         end
 
         if str2num(answer{5}) == 0 && str2num(answer{6}) == 0
             FDatMaxs3 = zeros(1,FDatSiz(2), FDatSiz(3));
         else
-            zz = max(FDat(length(ppms(ppms >= str2num(answer{6})))+1:length(ppms(ppms >= str2num(answer{5})))+1,:,:));
-            FDatMaxs3 = round(255*(zz)/(max(zz(:))));
+            zz = max(FDatTP(length(ppms(ppms >= str2num(answer{6})))+1:length(ppms(ppms >= str2num(answer{5})))+1,:,:));
+            FDatMaxs3 = round(255*(zz)/(max(zz(:))*sat));
         end
 
         colmp = [1:255; 1:255; 1:255]'/255;
@@ -48,6 +49,7 @@ function [namfil] = genSpectraAllColorGrid_Colormap_MultPeak(FDat, tf, foldpath,
 
         fsiz = size(FDat);
         totDat = real(FDat(:,:,:,1,1,1,:));
+        totDatTP = real(FDat(:,:,:,1,1,1,tf));
     
         gensiz = size(FDat);
         subplot = @(m,n,p) subtightplot (m, n, p, [0 0], [0 0], [0 0]);
@@ -97,8 +99,9 @@ function [namfil] = genSpectraAllColorGrid_Colormap_MultPeak(FDat, tf, foldpath,
         set(gcf, 'InvertHardcopy', 'off');
  
 
-        saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'_RGB_',join(answer(:), '-'),'.png'], ''))
-        saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'_RGB_',join(answer(:), '-'),'.fig'], ''))
+        saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'_Sat',string(satp),'_RGB_',join(answer(:), '-'),'.png'], ''))
+        saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'_Sat',string(satp),'_RGB_',join(answer(:), '-'),'.fig'], ''))
+        saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'_Sat',string(satp),'_RGB_',join(answer(:), '-'),'.svg'], ''))
         
         close(ff)
         

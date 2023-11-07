@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="782056526" file="C:\IBECPostDocDrive\2023_06_09_CheShImPExe\CheShImP.prj" location="C:\IBECPostDocDrive\2023_06_09_CheShImPExe" name="CheShImP" preferred-package-location="C:\IBECPostDocDrive\2023_06_09_CheShImPExe\CheShImP\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="1798540480" file="C:\IBECPostDocDrive\2023_04_21_MatlabMRIDataProcessing\CheShImP.prj" location="C:\IBECPostDocDrive\2023_04_21_MatlabMRIDataProcessing" name="CheShImP" preferred-package-location="C:\IBECPostDocDrive\2023_04_21_MatlabMRIDataProcessing\CheShImP\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>CheShImP</param.appname>
     <param.icon>${PROJECT_ROOT}\CheShImP_resources\icon.ico</param.icon>
     <param.icons>
@@ -19,7 +19,7 @@
     <param.installpath.string>\IBEC\CheShImP\</param.installpath.string>
     <param.installpath.combo>option.installpath.appdata</param.installpath.combo>
     <param.logo>${PROJECT_ROOT}\Logo2.png</param.logo>
-    <param.install.notes />
+    <param.install.notes>Python is required to be installen and in the system path to generate the CSI and proton image overlays.</param.install.notes>
     <param.target.install.notes />
     <param.intermediate>${PROJECT_ROOT}\CheShImP\for_testing</param.intermediate>
     <param.files.only>${PROJECT_ROOT}\CheShImP\for_redistribution_files_only</param.files.only>
@@ -53,7 +53,6 @@
       <param.description />
       <param.guid />
       <param.installpath.string />
-      <param.install.notes />
       <param.target.install.notes />
       <param.intermediate />
       <param.files.only />
@@ -76,24 +75,59 @@
       <param.example />
     </unset>
     <fileset.main>
-      <file>${PROJECT_ROOT}\Scripts\ImageMRIDat_DVD.m</file>
+      <file>${PROJECT_ROOT}\ImageMRIDat_DVD.m</file>
     </fileset.main>
     <fileset.resources>
-      <file>${PROJECT_ROOT}\Scripts\pvmatlab</file>
+      <file>${PROJECT_ROOT}\AutomationEchoPhaseCorrect.m</file>
+      <file>${PROJECT_ROOT}\baseline.m</file>
+      <file>${PROJECT_ROOT}\compSNR.m</file>
+      <file>${PROJECT_ROOT}\ComputeSNRandPackWidth.m</file>
+      <file>${PROJECT_ROOT}\CSIProc.m</file>
+      <file>${PROJECT_ROOT}\CSIReader.m</file>
+      <file>${PROJECT_ROOT}\datProcLineBroad.m</file>
+      <file>${PROJECT_ROOT}\FullImageCSIOverlaySkeleton.ipynb</file>
+      <file>${PROJECT_ROOT}\GeneralCommands.m</file>
+      <file>${PROJECT_ROOT}\genOverlayPythonScript.m</file>
+      <file>${PROJECT_ROOT}\genOverlayPythonScript_Phased.m</file>
+      <file>${PROJECT_ROOT}\genSpectraAll.m</file>
+      <file>${PROJECT_ROOT}\genSpectraAll_Phased.m</file>
+      <file>${PROJECT_ROOT}\genSpectraAllColorGrid.m</file>
+      <file>${PROJECT_ROOT}\genSpectraAllColorGrid_Colormap.m</file>
+      <file>${PROJECT_ROOT}\genSpectraAllColorGrid_Colormap_MaxRat.m</file>
+      <file>${PROJECT_ROOT}\genSpectraAllColorGrid_Colormap_MultPeak.m</file>
+      <file>${PROJECT_ROOT}\getFOV.m</file>
+      <file>${PROJECT_ROOT}\getFOVCors.m</file>
+      <file>${PROJECT_ROOT}\getFOVCorsH.m</file>
+      <file>${PROJECT_ROOT}\getVisuPars.m</file>
+      <file>${PROJECT_ROOT}\getVisuParsH.m</file>
+      <file>${PROJECT_ROOT}\ImageDICOMinPython.ipynb</file>
+      <file>${PROJECT_ROOT}\LoadRawCSIData.m</file>
+      <file>${PROJECT_ROOT}\panel.m</file>
+      <file>${PROJECT_ROOT}\peak_stripping.m</file>
+      <file>${PROJECT_ROOT}\phase0Proc.m</file>
+      <file>${PROJECT_ROOT}\phase1Proc.m</file>
+      <file>${PROJECT_ROOT}\PlotCSI1DData.m</file>
+      <file>${PROJECT_ROOT}\PlotKSpaceSampling.m</file>
+      <file>${PROJECT_ROOT}\plotSpectraCSI.m</file>
+      <file>${PROJECT_ROOT}\PlotSpectras.m</file>
+      <file>${PROJECT_ROOT}\PlotSpectraSVGs.m</file>
+      <file>${PROJECT_ROOT}\PlottingTestsForFFTFunctions.m</file>
+      <file>${PROJECT_ROOT}\processMagDat.m</file>
+      <file>${PROJECT_ROOT}\processPhaseDat.m</file>
+      <file>${PROJECT_ROOT}\pvmatlab</file>
+      <file>${PROJECT_ROOT}\subplot_tight.m</file>
+      <file>${PROJECT_ROOT}\subtightplot.m</file>
+      <file>${PROJECT_ROOT}\tight_subplot.m</file>
+      <file>${PROJECT_ROOT}\WorkWith DICOMImages.m</file>
     </fileset.resources>
     <fileset.package />
     <fileset.depfun>
-      <file>${PROJECT_ROOT}\Scripts\genOverlayPythonScript.m</file>
-      <file>${PROJECT_ROOT}\Scripts\genSpectraAll.m</file>
-      <file>${PROJECT_ROOT}\Scripts\genSpectraAllColorGrid_Colormap.m</file>
-      <file>${PROJECT_ROOT}\Scripts\genSpectraAllColorGrid_Colormap_MultPeak.m</file>
-      <file>${PROJECT_ROOT}\Scripts\ImageMRIDat_DVD.fig</file>
-      <file>${PROJECT_ROOT}\Scripts\subtightplot.m</file>
+      <file>${PROJECT_ROOT}\ImageMRIDat_DVD.fig</file>
     </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}\CheShImP\for_testing" name="splash.png" optional="false">C:\IBECPostDocDrive\2023_06_09_CheShImPExe\CheShImP\for_testing\splash.png</file>
-      <file location="${PROJECT_ROOT}\CheShImP\for_testing" name="CheShImP.exe" optional="false">C:\IBECPostDocDrive\2023_06_09_CheShImPExe\CheShImP\for_testing\CheShImP.exe</file>
-      <file location="${PROJECT_ROOT}\CheShImP\for_testing" name="readme.txt" optional="true">C:\IBECPostDocDrive\2023_06_09_CheShImPExe\CheShImP\for_testing\readme.txt</file>
+      <file location="${PROJECT_ROOT}\CheShImP\for_testing" name="splash.png" optional="false">C:\IBECPostDocDrive\2023_04_21_MatlabMRIDataProcessing\CheShImP\for_testing\splash.png</file>
+      <file location="${PROJECT_ROOT}\CheShImP\for_testing" name="CheShImP.exe" optional="false">C:\IBECPostDocDrive\2023_04_21_MatlabMRIDataProcessing\CheShImP\for_testing\CheShImP.exe</file>
+      <file location="${PROJECT_ROOT}\CheShImP\for_testing" name="readme.txt" optional="true">C:\IBECPostDocDrive\2023_04_21_MatlabMRIDataProcessing\CheShImP\for_testing\readme.txt</file>
     </build-deliverables>
     <workflow />
     <matlab>

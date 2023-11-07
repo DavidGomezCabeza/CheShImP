@@ -1,9 +1,10 @@
 
 
-function genSpectraAllColorGrid_Colormap(FDat, tf, foldpath)
+function genSpectraAllColorGrid_Colormap(FDat, tf, foldpath, satp)
 
+    sat = (100-satp)/100;
 
-    if ~isfile(join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'.fig'], ''))
+    if ~isfile(join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'_Sat',string(satp),'.fig'], ''))
         
         % This assigns a different colour at each pixel almost for sure
 %         FDatMaxs = max(FDat);
@@ -19,9 +20,17 @@ function genSpectraAllColorGrid_Colormap(FDat, tf, foldpath)
 %         sortDat = sort(FDatMaxs(:));
 
         % Groups voxels with comparable maximum peak value
-        FDatMaxs = max(FDat);
+
+        FDatTP = FDat(:,:,:,1,1,1,tf);
+
+        FDatMaxs = max(FDatTP);
         FDatMaxsCmp = round(FDatMaxs(:)/min(FDatMaxs(:)));
+        satth = round(max(FDatMaxsCmp)*sat);
+        FDatMaxsCmp(FDatMaxsCmp>satth) = satth;
+
         colmp = colormap(parula(length(unique(FDatMaxsCmp(:)))));
+        colmp(colmp>1) = 1;
+
         colormap(gray)
 %         colmp = colormap(autumn(length(unique(FDatMaxsCmp(:)))));
         sortDat = sort(unique(FDatMaxsCmp(:)));
@@ -31,6 +40,7 @@ function genSpectraAllColorGrid_Colormap(FDat, tf, foldpath)
 
         fsiz = size(FDat);
         totDat = real(FDat(:,:,:,1,1,1,:));
+        totDatTP = real(FDat(:,:,:,1,1,1,tf));
     
         gensiz = size(FDat);
         subplot = @(m,n,p) subtightplot (m, n, p, [0 0], [0 0], [0 0]);
@@ -54,12 +64,18 @@ function genSpectraAllColorGrid_Colormap(FDat, tf, foldpath)
                     plot((real((FDat(:,j,i,1,1,1,tf)))), 'black','LineWidth',1)
 %                     mxd = max(FDat(:,j,i,1,1,1,tf)); % First case where you have a different colour for each voxel 
                     mxd = round(max(FDat(:,j,i,1,1,1,tf))/min(FDatMaxs(:))); % Second case where you group voxels of comparable intensity
+                    if mxd > satth
+                        mxd = satth;
+                    end
                 else % Rectangular grid
                     subplot(gensiz(3),gensiz(2),mm(count))
                     count= count+1;
                     plot(permute(real((FDat(:,i,j,1,1,1,tf))), [1,3,2,4,5,6,7,8]), 'black','LineWidth',1)
 %                     mxd = max(FDat(:,i,j,1,1,1,tf)); % First case where you have a different colour for each voxel 
                     mxd = round(max(FDat(:,i,j,1,1,1,tf))/min(FDatMaxs(:))); % Second case where you group voxels of comparable intensity
+                    if mxd > satth
+                        mxd = satth;
+                    end
                 end
                 ylim([min(totDat(:))-(max(totDat(:))*0.20) max(totDat(:))])
                 xlim([1-(gensiz(1)*0.10) gensiz(1)+(gensiz(1)*0.10)])
@@ -77,8 +93,9 @@ function genSpectraAllColorGrid_Colormap(FDat, tf, foldpath)
         set(gcf, 'InvertHardcopy', 'off');
  
 
-        saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'.png'], ''))
-        saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'.fig'], ''))
+        saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'_Sat',string(satp),'.png'], ''))
+        saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'_Sat',string(satp),'.fig'], ''))
+        saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_ColorGrid_',string(tf),'_Sat',string(satp),'.svg'], ''))
         
         close(ff)
         

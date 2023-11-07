@@ -53,6 +53,7 @@ function genSpectraAll(FDat, tf, foldpath)
         
     
         saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_',string(tf),'.png'], ''))
+        saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_',string(tf),'.svg'], ''))
         saveas(ff,join([foldpath,'\tmp_img\SpectraTimePoint_',string(tf),'.fig'], ''))
         
         close(ff)
