@@ -1,4 +1,5 @@
 # CheShImP
-Program to process MRI Chemical Shift Images
 
 ![alt text](https://github.com/DavidGomezCabeza/CheShImP/blob/main/Logo.png?raw=true)
+
+CheShImP is a program to process Chemical Shift Images (CSI) from Magnetic Resonance Imaging (MRI) systems. The platform automatically processes the FID files (for now, only tested with Bruker systems using ParaVision 360) and reconstructs the spectroscopic image for the users. The program can also overlay these CSIs over an MRI proton image (DICOM format), and the platform will automatically save all images and overlays. By default, the platform works with magnitudes by default, but manual/automatic phase correction is also available. 
