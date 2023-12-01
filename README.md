@@ -16,7 +16,59 @@ To generate the image overlay between CSI and a proton image, the platform uses 
 
 ## Package Functionalities
 
+![alt text](https://github.com/DavidGomezCabeza/CheShImP/blob/main/Platform.png?raw=true)
+
   ### 1.- 
+
+  ### 2.- 
+
+  ### 3.- 
+
+  ### 4.- 
+
+  ### 5.- 
+
+  ### 6.- 
+
+  ### 7.- 
+
+  ### 8.- 
+
+  ### 9.- 
+
+  ### 10.- 
+
+  ### 11.- 
+
+  ### 12.- 
+
+  ### 13.- 
+
+  ### 14.- 
+
+  ### 15.- 
+
+  ### 16.- 
+
+  ### 17.- 
+
+  ### 18.- 
+
+  ### 19.- 
+
+  ### 20.- 
+
+  ### 21.- 
+
+  ### 22.- 
+
+  ### 23.- 
+
+  ### 24.-
+
+  ### 25.- 
+
+  ### 26.- 
 
 ## References
   **1.- ds** sasa 
