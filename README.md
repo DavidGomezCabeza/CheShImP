@@ -10,6 +10,9 @@ For non matlab users, the program (and its GUI) can be installed using the [**Ch
 
 Matlab users can access to the source code located in the directory [**Scripts**](https://github.com/DavidGomezCabeza/CheShImP/tree/main/Scripts). In there, executing the main script **ImageMRIDat_DVD.m** starts the CheShImP GUI. 
 
+**IMPORTANT**
+To generate the image overlay between CSI and a proton image, the platform uses python. For this reason, it is important to have python installed in your PATH System Variables. This Python Installation needs to have installed PIL, numpy and matplotlib. 
+
 ## Package Functionalities
 
   ### 1.- 
