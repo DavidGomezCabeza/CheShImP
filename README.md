@@ -20,7 +20,8 @@ To generate the image overlay between CSI and a proton image, the platform uses 
 
 ![alt text](https://github.com/DavidGomezCabeza/CheShImP/blob/main/Platform.png?raw=true)
 
-  ### 1.- Select the directory path for your CSI data. The button will open a window search and once inside the directory, just select a file from it (does not matter which one) to load you data and start the processing. 
+  ### 1.- CSI Path Directory. 
+  Select the directory path for your CSI data. The button will open a window search and once inside the directory, just select a file from it (does not matter which one) to load you data and start the processing. 
 
   ### 2.- 
 
