@@ -22,7 +22,7 @@ function varargout = ImageMRIDat_DVD(varargin)
 
 % Edit the above text to modify the response to help ImageMRIDat_DVD
 
-% Last Modified by GUIDE v2.5 03-Nov-2023 11:56:37
+% Last Modified by GUIDE v2.5 10-Nov-2023 19:10:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -125,7 +125,7 @@ function DataFolder_Callback(hObject, eventdata, handles)
     % Phase Correction
     if ~isfile(join([handles.GUIDataAll.CSIgenpath, 'tmp_img\PhasedData.mat'], ''))
 
-        [imageObj3, sizz, epc, ephci, siss, phv, pap, phma, dsz, ph1, pivotppm, pivot, handles] = processPhaseDat(kdataObj2, imageObj2, handles);
+        [imageObj3, sizz, epc, ephci, siss, phv, pap, phma, dsz, ph1, pivotppm, pivot, handles] = processPhaseDat(foldpath, imageObj2, handles);
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
@@ -139,7 +139,7 @@ function DataFolder_Callback(hObject, eventdata, handles)
         handles.GUIDataAll.ph1 = ph1;
         handles.GUIDataAll.pivotppm = pivotppm;
         handles.GUIDataAll.pivot = pivot;
-
+        handles.GUIDataAll.kdataObj2 = kdataObj2;
         guidata(hObject, handles);
 
     else
@@ -453,27 +453,62 @@ while true
     % Actual Ploting
 
     try 
-        axes(handles.axes2)  
-        cla reset
-        plot(ppms, real(handles.GUIDataAll.FDat2(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))), 'b')
-        ylim([min(rd(:)) max(rd(:))])
-        xlim([min(ppms) max(ppms)])
-        ax = gca;
-        ax.XDir = 'reverse';
-        xlabel('ppm')
-        legend('Real')
+        if ~isempty(handles.axes2.Children)
+            set(handles.axes2.Children, 'YData', real(handles.GUIDataAll.FDat2(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))))
+            set(handles.axes2.Children, 'XData', ppms)
+            set(handles.axes2, 'XLim', [min(ppms) max(ppms)])
+            set(handles.axes2, 'YLim', [min(rd(:)) max(rd(:))])
+            set(handles.axes2, 'XDir', 'reverse')
+        else
+            axes(handles.axes2)  
+            cla reset
+            plot(ppms, real(handles.GUIDataAll.FDat2(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))), 'b')
+            ylim([min(rd(:)) max(rd(:))])
+            xlim([min(ppms) max(ppms)])
+            ax = gca;
+            ax.XDir = 'reverse';
+    %         xlabel('ppm')
+            legend('Real')
+        end
         
-        axes(handles.axes3)
-        cla reset
-        plot(ppms,imag(handles.GUIDataAll.FDat2(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))), 'r')
-        ylim([min(id(:)) max(id(:))])
-        xlim([min(ppms) max(ppms)])
-        ax = gca;
-        ax.XDir = 'reverse';
-        xlabel('ppm')
-        legend('Imag')
+        if ~isempty(handles.axes3.Children)
+            set(handles.axes3.Children, 'YData', imag(handles.GUIDataAll.FDat2(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))))
+            set(handles.axes3.Children, 'XData', ppms)
+            set(handles.axes3, 'XLim', [min(ppms) max(ppms)])
+            set(handles.axes3, 'YLim', [min(id(:)) max(id(:))])
+            set(handles.axes3.XLabel, 'String', 'ppm')
+            set(handles.axes3, 'XDir', 'reverse')
+        else
+            axes(handles.axes3)
+            cla reset
+            plot(ppms,imag(handles.GUIDataAll.FDat2(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))), 'r')
+            ylim([min(id(:)) max(id(:))])
+            xlim([min(ppms) max(ppms)])
+            ax = gca;
+            ax.XDir = 'reverse';
+            xlabel('ppm')
+            legend('Imag')
+        end
         
         if isnan(str2double(handles.SFac.String))
+
+        if ~isempty(handles.axes4.Children)
+
+            if handles.togglebutton7.Value == 0 
+                set(handles.axes4.Children, 'YData', handles.GUIDataAll.FDat(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))
+                set(handles.axes4.Children, 'XData', ppms+str2double(handles.CSC.String))
+                set(handles.axes4.Legend, "String", 'Magn')
+            else
+                set(handles.axes4.Children, 'YData', real(handles.GUIDataAll.FDat3(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))))
+                set(handles.axes4.Children, 'XData', ppms+str2double(handles.CSC.String))
+                set(handles.axes4.Legend, 'String', 'Phs. Corr.')
+            end
+
+            set(handles.axes4, 'XLim', [min(ppms+str2double(handles.CSC.String)) max(ppms+str2double(handles.CSC.String))])
+            set(handles.axes4, 'YLim', [min(real(fd(:)))-max(real(fd(:)))*0.05 max(real(fd(:)))+max(real(fd(:)))*0.05])
+
+        else
+
             axes(handles.axes4)
             cla reset
             if handles.togglebutton7.Value == 0 
@@ -488,7 +523,8 @@ while true
             ax = gca;
             ax.XDir = 'reverse';
             xlabel('ppm')
-            
+        end
+        
             handles = guidata(hObject);
         
             if handles.togglebutton7.Value == 0 
@@ -497,7 +533,27 @@ while true
                 handles.GUIDataAll.currDat = handles.GUIDataAll.FDat3(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)));
             end
             guidata(hObject, handles);
+
+        
         else
+
+        if ~isempty(handles.axes4.Children)
+
+            if handles.togglebutton7.Value == 0 
+                set(handles.axes4.Children, 'YData', handles.GUIDataAll.FDat(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))*str2double(handles.SFac.String))
+                set(handles.axes4.Children, 'XData', ppms+str2double(handles.CSC.String))
+                set(handles.axes4.Legend, "String", 'Magn')
+            else
+                set(handles.axes4.Children, 'YData', real(handles.GUIDataAll.FDat3(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))*str2double(handles.SFac.String))
+                set(handles.axes4.Children, 'XData', ppms+str2double(handles.CSC.String))
+                set(handles.axes4.Legend, 'String', 'Phs. Corr.')
+            end
+
+            set(handles.axes4, 'XLim', [min(ppms+str2double(handles.CSC.String)) max(ppms+str2double(handles.CSC.String))])
+            set(handles.axes4, 'YLim', [min(real(fd(:)))-max(real(fd(:)))*0.05 max(real(fd(:)))+max(real(fd(:)))*0.05])
+
+        else
+
             axes(handles.axes4)
             cla reset
             if handles.togglebutton7.Value == 0  
@@ -512,6 +568,8 @@ while true
             ax = gca;
             ax.XDir = 'reverse';
             xlabel('ppm')
+
+        end
             
             handles = guidata(hObject);
        
@@ -1062,22 +1120,39 @@ else
         y2 = handles.GUIDataAll.y2;
         ppms = handles.GUIDataAll.ppms;
 
-        axes(handles.axes4)
-        cla reset
-%         plot(ppms, handles.GUIDataAll.FDat(:,dimsdat(2)-x2+1,dimsdat(3)-y2+1,1,1,1,handles.TimePoints.Value)*str2double(handles.SFac.String), 'g')
-        if handles.togglebutton7.Value == 0
-            plot(ppms, handles.GUIDataAll.FDat(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))*str2double(handles.SFac.String), 'g')
-            legend('Magn')
+        if ~isempty(handles.axes4.Children)
+
+            if handles.togglebutton7.Value == 0 
+                set(handles.axes4.Children, 'YData', handles.GUIDataAll.FDat(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))*str2double(handles.SFac.String))
+                set(handles.axes4.Children, 'XData', ppms)
+                set(handles.axes4.Legend, "String", 'Magn')
+            else
+                set(handles.axes4.Children, 'YData', real(handles.GUIDataAll.FDat3(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))*str2double(handles.SFac.String))
+                set(handles.axes4.Children, 'XData', ppms)
+                set(handles.axes4.Legend, 'String', 'Phs. Corr.')
+            end
+
+            set(handles.axes4, 'YLim', [min(real(fd(:)))-max(real(fd(:)))*0.05 max(real(fd(:)))+max(real(fd(:)))*0.05])
+            set(handles.axes4, 'XLim', [min(ppms) max(ppms)])
+
         else
-            plot(ppms, real(handles.GUIDataAll.FDat3(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))*str2double(handles.SFac.String), 'g')
-            legend('Phs. Corr.')
+
+            axes(handles.axes4)
+            cla reset
+    %         plot(ppms, handles.GUIDataAll.FDat(:,dimsdat(2)-x2+1,dimsdat(3)-y2+1,1,1,1,handles.TimePoints.Value)*str2double(handles.SFac.String), 'g')
+            if handles.togglebutton7.Value == 0
+                plot(ppms, handles.GUIDataAll.FDat(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))*str2double(handles.SFac.String), 'g')
+                legend('Magn')
+            else
+                plot(ppms, real(handles.GUIDataAll.FDat3(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))*str2double(handles.SFac.String), 'g')
+                legend('Phs. Corr.')
+            end
+            ylim([min(real(fd(:)))-max(real(fd(:)))*0.05 max(real(fd(:)))+max(real(fd(:)))*0.05])
+            xlim([min(ppms) max(ppms)])
+            ax = gca;
+            ax.XDir = 'reverse';
+            xlabel('ppm')
         end
-        ylim([min(real(fd(:)))-max(real(fd(:)))*0.05 max(real(fd(:)))+max(real(fd(:)))*0.05])
-        xlim([min(ppms) max(ppms)])
-        ax = gca;
-        ax.XDir = 'reverse';
-        xlabel('ppm')
-        
 
     end
 end
@@ -1212,6 +1287,22 @@ else
         y2 = handles.GUIDataAll.y2;
         ppms = handles.GUIDataAll.ppms+str2double(handles.CSC.String);
 
+        if ~isempty(handles.axes4.Children)
+
+            if handles.togglebutton7.Value == 0 
+                set(handles.axes4.Children, 'YData', handles.GUIDataAll.FDat(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))*str2double(handles.SFac.String))
+                set(handles.axes4.Children, 'XData', ppms)
+                set(handles.axes4.Legend, "String", 'Magn')
+            else
+                set(handles.axes4.Children, 'YData', handles.GUIDataAll.FDat3(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))*str2double(handles.SFac.String))
+                set(handles.axes4.Children, 'XData', ppms)
+                set(handles.axes4.Legend, 'String', 'Phs. Corr.')
+            end
+
+            set(handles.axes4, 'XLim', [min(ppms) max(ppms)])
+            set(handles.axes4, 'YLim', [min(real(fd(:)))-max(real(fd(:)))*0.05 max(real(fd(:)))+max(real(fd(:)))*0.05])
+
+        else
 
         axes(handles.axes4)
         cla reset
@@ -1228,7 +1319,7 @@ else
         ax = gca;
         ax.XDir = 'reverse';
         xlabel('ppm')
-        
+        end
 
     end
 end
@@ -1290,21 +1381,36 @@ if isfield(handles.GUIDataAll, 'x2')
     y2 = handles.GUIDataAll.y2;
     ppms = handles.GUIDataAll.ppms+str2double(handles.CSC.String);
 
-    axes(handles.axes4)
-    cla reset
-    if handles.togglebutton7.Value == 0 
-        plot(ppms, handles.GUIDataAll.FDat(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))*str2double(handles.SFac.String), 'g')
-        legend('Magn')
+    if ~isempty(handles.axes4.Children)
+        if handles.togglebutton7.Value == 0 
+                set(handles.axes4.Children, 'YData', handles.GUIDataAll.FDat(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))*str2double(handles.SFac.String))
+                set(handles.axes4.Children, 'XData', ppms)
+                set(handles.axes4.Legend, "String", 'Magn')
+            else
+                set(handles.axes4.Children, 'YData', real(handles.GUIDataAll.FDat3(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))*str2double(handles.SFac.String))
+                set(handles.axes4.Children, 'XData', ppms)
+                set(handles.axes4.Legend, 'String', 'Phs. Corr.')
+            end
+
+            set(handles.axes4, 'XLim', [min(ppms) max(ppms)])
+            set(handles.axes4, 'YLim', [min(real(fd(:)))-max(real(fd(:)))*0.05 max(real(fd(:)))+max(real(fd(:)))*0.05])
     else
-        plot(ppms, real(handles.GUIDataAll.FDat3(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))*str2double(handles.SFac.String), 'g')
-        legend('Phs. Corr.')
+        axes(handles.axes4)
+        cla reset
+        if handles.togglebutton7.Value == 0 
+            plot(ppms, handles.GUIDataAll.FDat(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))*str2double(handles.SFac.String), 'g')
+            legend('Magn')
+        else
+            plot(ppms, real(handles.GUIDataAll.FDat3(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))*str2double(handles.SFac.String), 'g')
+            legend('Phs. Corr.')
+        end
+            
+        ylim([min(real(fd(:)))-max(real(fd(:)))*0.05 max(real(fd(:)))+max(real(fd(:)))*0.05])
+        xlim([min(ppms) max(ppms)])
+        ax = gca;
+        ax.XDir = 'reverse';
+        xlabel('ppm')
     end
-        
-    ylim([min(real(fd(:)))-max(real(fd(:)))*0.05 max(real(fd(:)))+max(real(fd(:)))*0.05])
-    xlim([min(ppms) max(ppms)])
-    ax = gca;
-    ax.XDir = 'reverse';
-    xlabel('ppm')
 
 end
 
@@ -1363,19 +1469,41 @@ xx = handles.GUIDataAll.x2;
 yy = handles.GUIDataAll.y2;
 FIDdat = handles.GUIDataAll.FIDDat.data;
 
-axes(handles.axes2)  
-cla reset
-plot(real(FIDdat(:,yy,xx,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))), 'b')
-ax = gca;
-legend('Real')
+timfid = handles.GUIDataAll.FIDDat.Method.PVM_SpecAcquisitionTime;
+tims = linspace(0, timfid, length(real(FIDdat(:,yy,xx,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))));
 
 
-axes(handles.axes3)
-cla reset
-plot(imag(FIDdat(:,yy,xx,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))), 'r')
-ax = gca;
-legend('Imag')
+if ~isempty(handles.axes2.Children)
 
+    set(handles.axes2.Children, 'YData', real(FIDdat(:,yy,xx,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))))
+    set(handles.axes2.Children, 'XData', tims)
+    set(handles.axes2, 'XLim', [0 timfid])
+    set(handles.axes2, 'YLim', [min(real(FIDdat(:,yy,xx,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))) max(real(FIDdat(:,yy,xx,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))))])
+    set(handles.axes2, 'XDir', 'normal')
+    % set(handles.axes2.XLabel, 'String', ' ')
+    
+    set(handles.axes3.Children, 'YData', imag(FIDdat(:,yy,xx,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))))
+    set(handles.axes3.Children, 'XData', tims)
+    set(handles.axes3, 'XLim', [0 timfid])
+    set(handles.axes3, 'YLim', [min(imag(FIDdat(:,yy,xx,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))) max(imag(FIDdat(:,yy,xx,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))))])
+    set(handles.axes3, 'XDir', 'normal')
+    set(handles.axes3.XLabel, 'String', 'time (ms)')
+else
+
+    axes(handles.axes2)  
+    cla reset
+    plot(tims, real(FIDdat(:,yy,xx,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))), 'b')
+    ax = gca;
+    legend('Real')
+    xlabel('time (ms)')
+    
+    axes(handles.axes3)
+    cla reset
+    plot(tims, imag(FIDdat(:,yy,xx,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:)))), 'r')
+    ax = gca;
+    legend('Imag')
+    xlabel('time (ms)')
+end
 
 catch
 end
@@ -1577,7 +1705,7 @@ if isfield(handles.GUIDataAll, 'x2')
     else
 %         plot(ppms, real(imageObj3.data(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))*str2double(handles.SFac.String), 'g')
 %         legend('Phs. Corr.')
-        set(handles.axes4.Children, 'YData', real(imageObj3.data(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))*str2double(handles.SFac.String))
+        set(handles.axes4.Children, 'YData', real(FDat3(:,x2,y2,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))*str2double(handles.SFac.String))
         set(handles.axes4.Legend, "String", 'Phs. Corr.')
     end
     
@@ -1588,7 +1716,8 @@ if isfield(handles.GUIDataAll, 'x2')
 %     xlim([min(ppms) max(ppms)])
     ax = gca;
     ax.XDir = 'reverse';
-    xlabel('ppm')
+%     set(handles.axes4, 'xlabel', 'ppm')
+%     xlabel('ppm')
     
 end
 
@@ -1792,9 +1921,11 @@ if isfield(handles.GUIDataAll, 'x2')
 %     ylim([min(real(fd(:)))-max(real(fd(:)))*0.05 max(real(fd(:)))+max(real(fd(:)))*0.05])
 %     xlim([min(ppms) max(ppms)])
     
-    ax = gca;
-    ax.XDir = 'reverse';
-    xlabel('ppm')
+%     ax = gca;
+%     ax.XDir = 'reverse';
+
+%     set(handles.axes4, 'xlabel', 'ppm')
+%     xlabel('ppm')
 
 end
 
@@ -1892,6 +2023,3 @@ function ABL_Callback(hObject, eventdata, handles)
 
 
 Phase1Slide_Callback(hObject, [], handles);
-
-
-

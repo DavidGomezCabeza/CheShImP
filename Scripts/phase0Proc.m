@@ -29,7 +29,7 @@ function [x2,y2,z,ephci,phma,lbf,dsz,ph1,pivotppm,pivot,tmpdat,siss,ddim,imageOb
     
     % FIDDat = handles.GUIDataAll.FIDDat.data; 
     tmpdat = handles.GUIDataAll.FIDDat;
-    
+%     tmpdat = handles.GUIDataAll.kdataObj2;
     
     
     % THIS IS FOR PHASE CORRECTION!!! You have to remove phase_corr_pi!
@@ -108,7 +108,7 @@ function [x2,y2,z,ephci,phma,lbf,dsz,ph1,pivotppm,pivot,tmpdat,siss,ddim,imageOb
     imageObj3.data(:,x2,y2,1,1,1,z) = imageObj3.data(:,x2,y2,1,1,1,z) .* exp( ...
                 sqrt(-1) .* (phma(x2,y2,z) + ph1(x2,y2,z) .* ( ...
                     (-pivot(x2,y2,z):-pivot(x2,y2,z)+dsz-1)/dsz)'));
-    
+
 %     if ph1(x2,y2,z) ~= 0
 %         % Baseline correction from https://es.mathworks.com/matlabcentral/fileexchange/69649-raman-spectrum-baseline-removal
 %         [~, imageObj3.data(:,x2,y2,1,1,1,z)]=baseline(imageObj3.data(:,x2,y2,1,1,1,z));
