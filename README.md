@@ -26,7 +26,8 @@ To generate the image overlay between CSI and a proton image, the platform uses 
   ### 2.- Proton Image Path Directory
   Select the MAIN directory path for your proton image to overlay under your CSI. The button will open a window search and once inside the directory, just select a file from it (does not matter which one) or select a specific DICOM file (recomended option). The platform will read the Bruker generated meta-data files, so it will generate the overlay with the correct FOV from the sample (hence, the CSI field of view needs to be define inside the area of the proton image used). 
 
-  ### 3.- 
+  ### 3.- CSI and Proton Image FoV Overlay
+  The small window will show the loaded proton image, and in green color the area or field of view (FoV) for the CSI selected. This is a non-interactive part of the platform. 
 
   ### 4.- 
 
