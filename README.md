@@ -39,19 +39,19 @@ To generate the image overlay between CSI and a proton image, the platform uses 
   This section of the platform displays the highest signal-to-noise ratio (SNR) of the image (i.e. the one for the voxel with the highest one). Nonetheless, the platform will save a Matlab file named SNR.mat inside the tmp_img directory with the SNR for each individual voxel. To automatically compute the SNR, the platform takes 10% of each edge from an individual spectrum to extract the standard deviation of the noise, and uses the intensity of the highest peak as the signal. If the user wants to reduce this edge threshold, it can be modified in the scrip compSNR.m.
 
   ### 7.- Overlay of CSI and Proton Image
-
+  This toggle button switches the plain spectroscopic image from panel 13 to the overlay of the different voxels over a proton image (if selected in panel 2). As stated in the installation section, this overlay is generated using Python, so this should be included in the system path. 
 
   ### 8.- Scaling Factor (zoom)
-
+ This is a value that multiplies the spectra displayed in panel 17 to generate a zoom over the y-axis. By default, the value is 1. 
 
   ### 9.- Line Broadening
 
 
   ### 10.- Chemical Shift Correction
-
+  Amount of ppms that get added into the x-axis of panel 17 in case that a chemical shift correction is needed. The default value is 0, and the input accepts negative values. 
 
   ### 11.- Switch Between Magnitude and Phase Mode
-
+  Toggle button to switch all the spectroscopic data to be shown in magnitude mode or the real part of the complex number which can then be phase corrected (more details in section 12). 
 
   ### 12.- Phase (0 and 1) and base-line correction
 
@@ -72,16 +72,16 @@ To generate the image overlay between CSI and a proton image, the platform uses 
 
 
   ### 18.- Restart GUI for New Experiment
-
+  Press the button to close the current GUI and open it again from scratch to start analysing a new set of images without interference from the previous one. 
 
   ### 19.- Delete Temporary Directory with Processed Data
-
+  All data generated and processed images are saved in a folder called tmp_img inside the main CSI folder selected. This button deletes the directory and all its contents if pressed. 
 
   ### 20.- Plot FID of Selected Voxel (Displayed in Windows for Points 15 and 16)
-
+  For the currently selected voxel (from panel 13), display the real and imaginary parts of the FID in panels 15 and 16 instead of the Fourier-transformed data. 
 
   ### 21.- Use Colour Grid Instead of Porton Image in Overlay for Window of Point 13
-
+  Display the colour grid below the spectroscopic image in panel 13 instead of the proton image. By default, it will display the colour grid generated in section 22, but when clicking the MP tick it will display the one from panel 23 (more details in these following two sections). 
 
   ### 22.- Generate Colour Grid Using Maximum Peak Intensity in Each Voxel
 
