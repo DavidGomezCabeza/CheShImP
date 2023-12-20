@@ -45,8 +45,10 @@ To generate the image overlay between CSI and a proton image, the platform uses 
   This is a value that multiplies the spectra displayed in panel 17 to generate a zoom over the y-axis. By default, the value is 1. 
 
   ### 9.- Line Broadening
-  Sensitivity enhancement technique to increase the signal-to-noise ratio by multiplying the original FID signal by a decaying exponential function. In this case, the value introduced in the box indicates the end point of the expoenet part for the exponential function with the form: 
-  $e^{-LB:0}$
+  Sensitivity enhancement technique to increase the signal-to-noise ratio by multiplying the original FID signal by a decaying exponential function. In this case, the value introduced in the box indicates the end point of the exponent part for the exponential function with the form: 
+  $e^{-LB:0}$.
+
+  If the tick Rev is selected, the software will use a normal exponential function. If the tick UD is selected, then the platform will generate a combination of an increasing exponential up until the FID maximum point, and then a decaying one for the rest of the FID. These two last options might be used in the case of introducing spin echoes or similar in image acquisition. 
 
   ### 10.- Chemical Shift Correction
   Amount of ppms that get added into the x-axis of panel 17 in case that a chemical shift correction is needed. The default value is 0, and the input accepts negative values. 
@@ -55,22 +57,22 @@ To generate the image overlay between CSI and a proton image, the platform uses 
   Toggle button to switch all the spectroscopic data to be shown in magnitude mode or the real part of the complex number which can then be phase corrected (more details in section 12). 
 
   ### 12.- Phase (0 and 1) and base-line correction
-
+  
 
   ### 13.- CSI Display and Voxel Selection
-
+  This panel will show the main spectroscopic image, which can be overlayed on top of a proton image (see section 7), or alternatively over an intensity colour grid (see section 21). Also, it is in this panel where you, the user, can select specific voxels from the grid to display spectra in panels 15, 16 and 17. 
 
   ### 14.- CSI Colour Grid Displays (non-interactive)
-
+  This panel will show the main spectroscopic image, generally on its own or over the intensity colour grid (see sections 22 and 23). This display does NOT allow voxel selection.  
 
   ### 15.- Real Component Plot for Selected Voxel (fft as default)
-
+  Panel that displays the Fourier transform real part of a voxel selected in panel 13. It is non-interactive. If the button from section 20 is clicked, then the panel will show the FID's real part. 
 
   ### 16.- Imaginary Component Plot for Selected Voxel (fft as default)
-
+  Panel that displays the Fourier transform imaginary part of a voxel selected in panel 13. It is non-interactive. If the button from section 20 is clicked, then the panel will show the FID's imaginary part. 
 
   ### 17.- Magnitude or Phased Spectra Plot for Selected Voxel
-
+  Panel that displays the Fourier transformed data selected from a voxel in panel 13 in magnitude or phase corrected mode. This plot is interactive. 
 
   ### 18.- Restart GUI for New Experiment
   Press the button to close the current GUI and open it again from scratch to start analysing a new set of images without interference from the previous one. 
@@ -85,13 +87,13 @@ To generate the image overlay between CSI and a proton image, the platform uses 
   Display the colour grid below the spectroscopic image in panel 13 instead of the proton image. By default, it will display the colour grid generated in section 22, but when clicking the MP tick it will display the one from panel 23 (more details in these following two sections). 
 
   ### 22.- Generate Colour Grid Using Maximum Peak Intensity in Each Voxel
-
+  
 
   ### 23.- Generate RGB Colour Grid Using Maximum of a Spectral Region for Each Primary Colour
-
+  
 
   ### 24.- Level of Saturation Applied in the RGB Colour Grid (See section 23)
-
+  
 
   ### 25.- Peak Intensity Value Selected in Window for Point 17
   When right-clicking in pannel 17, this part of the GUI will show the spectra intensity for the point selected (no need to place the cursor on top of the spectra).
