@@ -46,7 +46,7 @@ To generate the image overlay between CSI and a proton image, the platform uses 
 
   ### 9.- Line Broadening
   Sensitivity enhancement technique to increase the signal-to-noise ratio by multiplying the original FID signal by a decaying exponential function. In this case, the value introduced in the box indicates the end point of the expoenet part for the exponential function with the form: 
-  $$ e^{-LB:0} $$
+  $e^{-LB:0}$
 
   ### 10.- Chemical Shift Correction
   Amount of ppms that get added into the x-axis of panel 17 in case that a chemical shift correction is needed. The default value is 0, and the input accepts negative values. 
