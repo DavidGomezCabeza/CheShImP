@@ -1,0 +1,13 @@
+##TITLE=Parameter List, ParaVision 360 V3.4
+##JCAMPDX=4.24
+##DATATYPE=Parameter Values
+##ORIGIN=Bruker BioSpin MRI GmbH
+##OWNER=pciuser
+$$ Write Options: Symbolic Enums, RLE encoded arrays, symbol visibility
+$$ 2023-05-16 15:18:59.870 +0200  pciuser@czc1517b9t
+$$ /opt/nmrdata/PV-360.3.4/data/pciuser/20230516_144623_Water_and_DMSO_eppendorf_MAR02002_DMSO_and_water_eppendorf_CSI_reconstruction_1_1/10/pdata/1/reco.out
+$$ process /opt/PV-360.3.4/prog/bin/parxserver
+##$RECO_abs_time=(1684243139, 846, 120)
+$$ @vis= RECO_OUT
+##END=
+$$ File finished by PARX at 2023-05-16 15:18:59.870 +0200
