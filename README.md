@@ -42,10 +42,11 @@ To generate the image overlay between CSI and a proton image, the platform uses 
   This toggle button switches the plain spectroscopic image from panel 13 to the overlay of the different voxels over a proton image (if selected in panel 2). As stated in the installation section, this overlay is generated using Python, so this should be included in the system path. 
 
   ### 8.- Scaling Factor (zoom)
- This is a value that multiplies the spectra displayed in panel 17 to generate a zoom over the y-axis. By default, the value is 1. 
+  This is a value that multiplies the spectra displayed in panel 17 to generate a zoom over the y-axis. By default, the value is 1. 
 
   ### 9.- Line Broadening
-
+  Sensitivity enhancement technique to increase the signal-to-noise ratio by multiplying the original FID signal by a decaying exponential function. In this case, the value introduced in the box indicates the end point of the expoenet part for the exponential function with the form: 
+  $$ e^{-LB:0} $$
 
   ### 10.- Chemical Shift Correction
   Amount of ppms that get added into the x-axis of panel 17 in case that a chemical shift correction is needed. The default value is 0, and the input accepts negative values. 
@@ -93,10 +94,10 @@ To generate the image overlay between CSI and a proton image, the platform uses 
 
 
   ### 25.- Peak Intensity Value Selected in Window for Point 17
-
+  When right-clicking in pannel 17, this part of the GUI will show the spectra intensity for the point selected (no need to place the cursor on top of the spectra).
 
   ### 26.- Chemical Shift in Parts Per Million (ppm) Value Selected in Window for Point 17
-
+  When right-clicking in pannel 17, this part of the GUI will show the chemical shift value (ppm) for the point selected (no need to place the cursor on top of the spectra).
 
 ## References
   **1.- ds** sasa 
