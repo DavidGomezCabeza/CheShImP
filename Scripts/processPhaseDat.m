@@ -162,7 +162,10 @@ function [imageObj3, sizz, epc, ephci, siss, phv, pap, phma, dsz, ph1, pivotppm,
                     mada2= find(ccc2(:,2) == max(ccc2(:,2)));
 
                     phma(i,j,z) = ccc2(mada2(1),1);
-                    imageObj3.data(:,i,j,1,1,1,z) = imageObj3.data(:,i,j,1,1,1,z) .*exp(sqrt(-1)*ccc2(mada2(1),1) +ph1(i,j,z).*((-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)' );
+%                     imageObj3.data(:,i,j,1,1,1,z) = imageObj3.data(:,i,j,1,1,1,z) .*exp(sqrt(-1)*ccc2(mada2(1),1) +ph1(i,j,z).*((-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)' );
+                    imageObj3.data(:,i,j,1,1,1,z) = imageObj3.data(:,i,j,1,1,1,z) .* exp( ...
+                                sqrt(-1) .* (ccc2(mada2(1),1) + ph1(i,j,z) .* ( ...
+                                (-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)'));
             end
         end
     end
