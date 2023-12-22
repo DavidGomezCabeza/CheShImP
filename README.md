@@ -57,7 +57,12 @@ To generate the image overlay between CSI and a proton image, the platform uses 
   Toggle button to switch all the spectroscopic data to be shown in magnitude mode or the real part of the complex number which can then be phase corrected (more details in section 12). 
 
   ### 12.- Phase (0 and 1) and base-line correction
-  
+  This section handles the manual phase correction (order 0 and 1) and the automatic phase correction (only 0 implemented for now) and baseline correction. First, the program will iterate over each voxel in the spectroscopic image, and automatically check if there is an echo phase in the FID, moving this fragment from the beginning to the end of the FID, removing artefact ripples in the Fourier transform. Then, it automatically selects a good phase 0 correction by selecting the one that maximises the sum of all the points in the spectra (penalising hence negative phases). All this operations can be found in the script processPhaseDat.m. Alternatively, users can select a specific voxel and use the slide bars to modify phase 0 (Ph. 0) and phase 1 (Ph. 1), also being able to select the pivot frequency (or in this case chemical shift) in the editable box at the bottom of the Ph. 1 slider. For all phase corrections, the platform uses the formulation:
+  $data*e^{i*(ph0 + ph1*w)}$
+where $w$ refers to a specific frequency, and in the code is a vector computed as $(-pivot:-pivot+length(data))/length(data)$.
+
+Due to artifact ripples coming from phase 1 correction, users can press the ABL button for an automatic baseline correction using the Raman Spectrum Baseline Removal from Reference 1. 
+
 
   ### 13.- CSI Display and Voxel Selection
   This panel will show the main spectroscopic image, which can be overlayed on top of a proton image (see section 7), or alternatively over an intensity colour grid (see section 21). Also, it is in this panel where you, the user, can select specific voxels from the grid to display spectra in panels 15, 16 and 17. 
@@ -87,13 +92,13 @@ To generate the image overlay between CSI and a proton image, the platform uses 
   Display the colour grid below the spectroscopic image in panel 13 instead of the proton image. By default, it will display the colour grid generated in section 22, but when clicking the MP tick it will display the one from panel 23 (more details in these following two sections). 
 
   ### 22.- Generate Colour Grid Using Maximum Peak Intensity in Each Voxel
-  
+  This section extracts the maximum spectra intensity for each voxel of the spectroscopic image and generates a colour map from this data. The different spectra are also plotted on top of the colour map, and this uses the default one from Matlab. 
 
   ### 23.- Generate RGB Colour Grid Using Maximum of a Spectral Region for Each Primary Colour
-  
+  When selecting this option, users will have the option to provide up to three minimum and maximum spectra chemical shifts (ppm). From here, the program will extract the maximum peak intensity for each selected region and for each voxel. Then, for each one of the selected regions (up to three), the platform will generate a colour map using only red, green and/or blue, where the colour intensity will be proportional to the spectra intensity in each region. Finally, the platform provides a composite of the (up to) three colourmaps. 
 
-  ### 24.- Level of Saturation Applied in the RGB Colour Grid (See section 23)
-  
+  ### 24.- Level of Saturation Applied in the RGB Colour Grid 
+  Saturation level for the colour maps generated in sections 22 and 23. By default, the value is 0% (no saturation). By increasing this value, you can select the percentage saturation, defined as the percentage at the end of high signal intensities that will be considered as the maximum one when generating the colour map. For example, if the maximum peak intensities of our spectroscopic image range from 0 to 100, a saturation of 20% indicates that intensities of 80 or higher will be considered the same as 100. This option becomes useful in cases with regions with significantly different spectra peak intensities, for example. 
 
   ### 25.- Peak Intensity Value Selected in Window for Point 17
   When right-clicking in pannel 17, this part of the GUI will show the spectra intensity for the point selected (no need to place the cursor on top of the spectra).
@@ -102,4 +107,4 @@ To generate the image overlay between CSI and a proton image, the platform uses 
   When right-clicking in pannel 17, this part of the GUI will show the chemical shift value (ppm) for the point selected (no need to place the cursor on top of the spectra).
 
 ## References
-  **1.- ds** sasa 
+  **1.- Raman Spectrum Baseline Removal** Ayad Al-Rumaithi (2023). Raman Spectrum Baseline Removal (https://www.mathworks.com/matlabcentral/fileexchange/69649-raman-spectrum-baseline-removal), MATLAB Central File Exchange. Recuperado December 22, 2023.
