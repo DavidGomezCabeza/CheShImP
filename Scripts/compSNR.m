@@ -2,6 +2,9 @@
 
 function [SNR, mva] = compSNR(handles, FDat, FDat3)
 
+    perN = 0.1;
+
+
     try
         if handles.togglebutton7.Value == 0
             sis = size(FDat);
@@ -16,10 +19,10 @@ function [SNR, mva] = compSNR(handles, FDat, FDat3)
         cnt = 1;
         for i = 1:sis(2)
             for j = 1:sis(3)
-                SNR(cnt) = max(FDatFrame(:,i,j))/std([FDatFrame(1:round(sis(1)*0.1),i,j); FDatFrame(end-round(sis(1)*0.1)+1:end,i,j)]);
+                SNR(cnt) = max(FDatFrame(:,i,j))/std([FDatFrame(1:round(sis(1)*perN),i,j); FDatFrame(end-round(sis(1)*perN)+1:end,i,j)]);
                 cnt = cnt +1;
 
-                SNRAll(i,j) = max(FDatFrame(:,i,j))/std([FDatFrame(1:round(sis(1)*0.1),i,j); FDatFrame(end-round(sis(1)*0.1)+1:end,i,j)]);
+                SNRAll(i,j) = max(FDatFrame(:,i,j))/std([FDatFrame(1:round(sis(1)*perN),i,j); FDatFrame(end-round(sis(1)*perN)+1:end,i,j)]);
 %                 if ismember(mva, FDat(:,i,j))
 %                     mvi = [i,j];
 %                 end
