@@ -57,11 +57,11 @@ To generate the image overlay between CSI and a proton image, the platform uses 
   Toggle button to switch all the spectroscopic data to be shown in magnitude mode or the real part of the complex number which can then be phase corrected (more details in section 12). 
 
   ### 12.- Phase (0 and 1) and base-line correction
-  This section handles the manual phase correction (order 0 and 1) and the automatic phase correction (only 0 implemented for now) and baseline correction. First, the program will iterate over each voxel in the spectroscopic image, and automatically check if there is an echo phase in the FID, moving this fragment from the beginning to the end of the FID, removing artefact ripples in the Fourier transform. Then, it automatically selects a good phase 0 correction by selecting the one that maximises the sum of all the points in the spectra (penalising hence negative phases). All these operations can be found in the script processPhaseDat.m. Alternatively, users can select a specific voxel and use the slide bars to modify phase 0 (Ph. 0) and phase 1 (Ph. 1), also being able to select the pivot frequency (or in this case chemical shift) in the editable box at the bottom of the Ph. 1 slider. For all phase corrections, the platform uses the formulation:
+  This section handles the manual phase correction (order 0 and 1) and the automatic phase correction (order 0 and 1 by brut-force a cost function derived from the entropy minimisation algorithm shown in Reference 1) and baseline correction. First, the program will iterate over each voxel in the spectroscopic image, and automatically check if there is an echo phase in the FID, moving this fragment from the beginning to the end of the FID, removing artefact ripples in the Fourier transform. Then, it automatically selects a good phase 0 correction by selecting the one that maximises the sum of all the points in the spectra (penalising hence negative phases). All these operations can be found in the script processPhaseDat.m. Alternatively, users can select a specific voxel and use the slide bars to modify phase 0 (Ph. 0) and phase 1 (Ph. 1), also being able to select the pivot frequency (or in this case chemical shift) in the editable box at the bottom of the Ph. 1 slider. For all phase corrections, the platform uses the formulation:
   $D * e^{i * (ph0 + ph1 * w)}$
 where $w$ refers to a specific frequency, and $D$ the spectroscopic data, and in the code is a vector computed as $(-pivot:-pivot+length(data))/length(data)$.
 
-Due to artefact ripples coming from phase 1 correction, users can press the ABL button for an automatic baseline correction using the Raman Spectrum Baseline Removal from Reference 1. 
+Due to artefact ripples coming from phase 1 correction, users can press the ABL button for an automatic baseline correction using the Whittaker Smoother Baseline Removal from Reference 2. 
 
 
   ### 13.- CSI Display and Voxel Selection
@@ -107,4 +107,5 @@ Due to artefact ripples coming from phase 1 correction, users can press the ABL 
   When right-clicking in pannel 17, this part of the GUI will show the chemical shift value (ppm) for the point selected (no need to place the cursor on top of the spectra).
 
 ## References
-  **1.- Raman Spectrum Baseline Removal** Ayad Al-Rumaithi (2023). Raman Spectrum Baseline Removal (https://www.mathworks.com/matlabcentral/fileexchange/69649-raman-spectrum-baseline-removal), MATLAB Central File Exchange. Recuperado December 22, 2023.
+  **1.- Entropy Phase Correction** Chen, L., Weng, Z., Goh, L. and Garland, M., 2002. An efficient algorithm for automatic phase correction of NMR spectra based on entropy minimization. Journal of Magnetic Resonance, 158(1-2), pp.164-168.
+  **2.- Whittaker Smoother Baseline Correction** Cobas, C., 2018. Applications of the Whittaker smoother in NMR spectroscopy. Magnetic Resonance in Chemistry, 56(12), pp.1140-1148.
