@@ -121,18 +121,17 @@ function [imageObj3, sizz, epc, ephci, siss, phv, pap, phma, dsz, ph1, pivotppm,
     end
 
     phma = zeros(siss(2), siss(3), pap);
-
-
+    ph1v = -40:4:40;
+    
     dsz = length(imageObj2.data(:,1,1,1,1,1,1));
     ph1 = zeros(siss(2), siss(3), pap);
     pivotppm = zeros(siss(2), siss(3), pap) + str2num(handles.PivotEdit.String);
     pivot = zeros(siss(2), siss(3), pap);
-
+    params.nonNegativePenalty=true;
 
     for z = 1:pap
         for i = 1:siss(2)
             for j = 1:siss(3)
-
                     ccc = zeros(length(phv), 2);
                     ccc(:,1) = phv;
                     for k =1:length(phv)
@@ -146,14 +145,26 @@ function [imageObj3, sizz, epc, ephci, siss, phv, pap, phma, dsz, ph1, pivotppm,
                     end
                     mada= find(ccc(:,2) == max(ccc(:,2)));
 
+
+                    xx = imageObj3.data(:,i,j,1,1,1,z) .* exp( ...
+                                sqrt(-1) .* (ccc(mada(1),1) + ph1(i,j,z) .* ( ...
+                                (-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)'));
+                    
+                    maxpik = find(real(xx) == max(real(xx)));
+                    maxpik = maxpik(1);
+
+                    yy = imageObj3.data(max([maxpik-round(length(xx)*0.03), 1]):min([maxpik+round(length(xx)*0.03), dsz]),i,j,1,1,1,z);
+
+
+
                     phv2 = phv(mada)-0.1:0.001:phv(mada)+0.1;
 
                     ccc2 = zeros(length(phv2), 2);
                     ccc2(:,1) = phv2;
                     for k =1:length(phv2)
-                        phdat = real(imageObj3.data(:,i,j,1,1,1,z) .* exp( ...
+                        phdat = real(yy .* exp( ...
                                 sqrt(-1) .* (phv2(k) + ph1(i,j,z) .* ( ...
-                                (-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)')));
+                                (-pivot(i,j,z):-pivot(i,j,z)+length(yy)-1)/length(yy))')));
 %                         phdat = real(imageObj3.data(:,i,j,1,1,1,z) .* exp(sqrt(-1)*phv2(k) +ph1(i,j,z).*((-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)' ));
                         
                         ccc2(k,2) = sum(phdat(phdat<0)/max(phdat));
@@ -162,10 +173,113 @@ function [imageObj3, sizz, epc, ephci, siss, phv, pap, phma, dsz, ph1, pivotppm,
                     mada2= find(ccc2(:,2) == max(ccc2(:,2)));
 
                     phma(i,j,z) = ccc2(mada2(1),1);
-%                     imageObj3.data(:,i,j,1,1,1,z) = imageObj3.data(:,i,j,1,1,1,z) .*exp(sqrt(-1)*ccc2(mada2(1),1) +ph1(i,j,z).*((-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)' );
-                    imageObj3.data(:,i,j,1,1,1,z) = imageObj3.data(:,i,j,1,1,1,z) .* exp( ...
+
+
+                    zz = imageObj3.data(:,i,j,1,1,1,z) .*exp(sqrt(-1)*ccc2(mada2(1),1) +ph1(i,j,z).*((-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)' );
+
+
+
+                    pivot(i,j,z) = maxpik;
+
+                    
+                    ccc3 = zeros(length(ph1v), 2);
+                    ccc3(:,1) = ph1v;
+                    for k =1:length(ph1v)
+%                         phdat = real(imageObj3.data(:,i,j,1,1,1,z) .* exp( ...
+%                                 sqrt(-1) .* (ccc2(mada2(1),1) + ph1v(k) .* ( ...
+%                                 (-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)')));
+                        phdat = imageObj3.data(:,i,j,1,1,1,z) .* exp( ...
+                                sqrt(-1) .* (ccc2(mada2(1),1) + ph1v(k) .* ( ...
+                                (-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)'));
+
+                        ccc3(k,2) = phaseCorrectCostFunction(phdat', params);
+
+
+%                         phdat = real(imageObj3.data(:,i,j,1,1,1,z) .* exp(sqrt(-1)*phv2(k) +ph1(i,j,z).*((-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)' ));
+%                         phdat2 = phdat+abs(min(phdat(max([1,maxpik-round(length(xx)*0.03)]):min([dsz, maxpik+round(length(xx)*0.03)]))));
+
+
+
+
+%                         ccc3(k,2) = sum(phdat2(phdat2<0)/max(phdat2));
+                        
+
+                
+                    end
+                    mada3= find(ccc3(:,2) == min(ccc3(:,2)));
+
+                    ph1(i,j,z) = ccc3(mada3(1),1);
+
+
+                    ww = imageObj3.data(:,i,j,1,1,1,z) .* exp( ...
                                 sqrt(-1) .* (ccc2(mada2(1),1) + ph1(i,j,z) .* ( ...
                                 (-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)'));
+
+
+
+
+
+
+%                     figure, plot(real(ww))
+
+                    
+%                     [a, rr]=baseline(real(ww));
+
+
+
+
+                    phv12 = ph1(i,j,z)-2:0.2:ph1(i,j,z)+2;
+                    ccc4 = zeros(length(phv12), 2);
+                    ccc4(:,1) = phv12;
+                    for k =1:length(phv12)
+                        phdat = real(imageObj3.data(:,i,j,1,1,1,z) .* exp( ...
+                                sqrt(-1) .* (ccc2(mada2(1),1) + phv12(k) .* ( ...
+                                (-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)')));
+%                         phdat = real(imageObj3.data(:,i,j,1,1,1,z) .* exp(sqrt(-1)*phv2(k) +ph1(i,j,z).*((-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)' ));
+                        
+%                         ccc4(k,2) = sum(phdat(phdat<0)/max(phdat));
+%                         [~, rr]=baseline(real(phdat));
+%                         ccc4(k,2) = std(rr);
+                        ccc4(k,2) = phaseCorrectCostFunction(phdat', params);
+                    end
+                    mada4= find(ccc4(:,2) == min(ccc4(:,2)));
+
+                    ph1(i,j,z) = ccc4(mada4(1),1);
+
+
+                    ww = imageObj3.data(:,i,j,1,1,1,z) .* exp( ...
+                                sqrt(-1) .* (ccc2(mada2(1),1) + ph1(i,j,z) .* ( ...
+                                (-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)'));
+
+%                     [~, rr]=baseline((ww));
+
+
+                    
+
+                    Rpre = real(ww)';
+
+                    PeakInfo  = GetPeaks( Rpre, 6, 0.001 );
+                    Weight = ones( length( ww),1 );
+                    for h = 1 : length( PeakInfo )
+                    Weight( PeakInfo( h ).Start:PeakInfo( h ).End ) = 0;
+                    end
+
+                    L = length(Rpre);
+                    E = speye( L );
+                    D = diff( E, 1 );
+                    W = spdiags(Weight, 0, L, L );
+                    C = chol( W + 1600 * D' * D );
+                    EntropyBaseLine = C\( C'\( Weight.* Rpre' ) );
+
+                    R = ww - EntropyBaseLine;
+
+
+                    imageObj3.data(:,i,j,1,1,1,z) = R;
+
+%                     imageObj3.data(:,i,j,1,1,1,z) = imageObj3.data(:,i,j,1,1,1,z) .*exp(sqrt(-1)*ccc2(mada2(1),1) +ph1(i,j,z).*((-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)' );
+                        
+            
+            
             end
         end
     end
