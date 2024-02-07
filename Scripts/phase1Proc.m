@@ -23,7 +23,11 @@ function [x2,y2,z,ephci,phma,lbf,dsz,ph1,pivotppm,pivot,tmpdat,siss,ddim,imageOb
     pivotppm(x2,y2,z) = str2num(handles.PivotEdit.String);
     
     pivot = handles.GUIDataAll.pivot;
-    pivot(x2,y2,z) = length(handles.GUIDataAll.ppms((handles.GUIDataAll.ppms <= pivotppm(x2,y2,z))))+1;
+
+    if pivotppm(x2,y2,z) ~= 0
+        pivot(x2,y2,z) = length(handles.GUIDataAll.ppms((handles.GUIDataAll.ppms <= pivotppm(x2,y2,z))))+1;
+    end
+
     
     try
         lbf = handles.GUIDataAll.lbf;
@@ -117,7 +121,28 @@ function [x2,y2,z,ephci,phma,lbf,dsz,ph1,pivotppm,pivot,tmpdat,siss,ddim,imageOb
     
     % Baseline correction from https://es.mathworks.com/matlabcentral/fileexchange/69649-raman-spectrum-baseline-removal
     if handles.ABL.Value == 1
-        [~, imageObj3.data(:,x2,y2,1,1,1,z)]=baseline(imageObj3.data(:,x2,y2,1,1,1,z));
+%         [~, imageObj3.data(:,x2,y2,1,1,1,z)]=baseline(imageObj3.data(:,x2,y2,1,1,1,z));
+
+        Rpre = real(imageObj3.data(:,x2,y2,1,1,1,z))';
+
+        PeakInfo  = GetPeaks( Rpre, 6, 0.001 );
+        Weight = ones( length( imageObj3.data(:,x2,y2,1,1,1,z)),1 );
+        for h = 1 : length( PeakInfo )
+        Weight( PeakInfo( h ).Start:PeakInfo( h ).End ) = 0;
+        end
+        try
+            L = length(Rpre);
+            E = speye( L );
+            D = diff( E, 1 );
+            W = spdiags(Weight, 0, L, L );
+            C = chol( W + 1600 * D' * D );
+            EntropyBaseLine = C\( C'\( Weight.* Rpre' ) );
+        catch
+            EntropyBaseLine=0;
+        end
+
+        imageObj3.data(:,x2,y2,1,1,1,z) = imageObj3.data(:,x2,y2,1,1,1,z) - EntropyBaseLine;
+
     end
     
     
