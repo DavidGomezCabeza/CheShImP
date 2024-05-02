@@ -1524,7 +1524,7 @@ if handles.togglebutton5.Value == 1
 
 
     foldpath = handles.GUIDataAll.CSIgenpath;
-    if isfile(join([foldpath, '/tmp_img/SpectraTimePoint_ColorGrid_',num2str(handles.TimePoints.Value),'_Sat',string(handles.edit8.String),'.png'],''))
+    if ~isempty(dir(join([foldpath, '/tmp_img/SpectraTimePoint_ColorGrid_',num2str(handles.TimePoints.Value),'_Sat',"*",'.png'],'')))
         
         if handles.radiobutton4.Value == 1
             cg = imread(handles.GUIDataAll.namfil);
