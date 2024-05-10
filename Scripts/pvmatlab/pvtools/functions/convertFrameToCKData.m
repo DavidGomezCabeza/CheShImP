@@ -134,6 +134,16 @@ function [ data ] = convertFrameToCKData( data, Acqp, varargin )
     
     numSelectedReceivers=size(data,3);
     
+    % Added by David
+    if ~isempty(strfind(Acqp.ACQ_method,'EPSI'))
+        if isComplex
+            ACQ_size = [ACQ_size(2)*2, ACQ_size(1)/2, ACQ_size(3)];
+        else
+            ACQ_size = [ACQ_size(2), ACQ_size(1), ACQ_size(3)];
+        end
+    end
+
+
     % Convert if complex: to blockSize of a complex Matrix and change
     % ACQ_size(1)
     if isComplex

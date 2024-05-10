@@ -176,9 +176,9 @@ if ~isempty(RecoScaleChan), Reco.RecoScaleChan=RecoScaleChan; end
 [varargin, RecoPhaseChan] = bruker_addParamValue(varargin, 'RecoPhaseChan', '@(x) isnumeric(x)', []);
 if ~isempty(RecoPhaseChan), Reco.RecoPhaseChan=RecoPhaseChan; end
 
-if ~isempty(varargin)
-    error([varargin{1}, ' is not accepted.']);
-end
+% if ~isempty(varargin)
+%     error([varargin{1}, ' is not accepted.']);
+% end
 
 
 %% covert some varibles
@@ -212,6 +212,13 @@ map=reshape(1:size(data,6)*size(data,7), [size(data,7), size(data,6)])';
 % change recopart to cell
 if ~iscell(recopart)
     recopart={recopart};
+end
+
+% Added by David to process EPSI
+if ~isempty(varargin)
+if ~isempty(strfind(varargin{1},'EPSI'))
+    Reco.RECO_size = [Reco.RECO_size(2), Reco.RECO_size(1), Reco.RECO_size(3)];
+end
 end
 
 %% start processing
@@ -269,13 +276,21 @@ for part=1:length(recopart)
             end
             % init: zero-Matrix in correct precision
             newdata_dims=[1 1 1 1];
-            newdata_dims(1:length(Reco.RECO_ft_size))=Reco.RECO_ft_size;           
+            newdata_dims(1:length(Reco.RECO_ft_size))=Reco.RECO_ft_size;   
+            % Added by David for EPSI
+            if ~isempty(varargin)
+            if contains(varargin{1},'EPSI')
+                newdata_dims = [newdata_dims(2), newdata_dims(1), newdata_dims(3), newdata_dims(4:end)];
+                Reco.RECO_ft_size = [Reco.RECO_ft_size(2), Reco.RECO_ft_size(1), Reco.RECO_ft_size(3)];
+            end
+            end
+
             newdata=zeros([newdata_dims, size(data,5), size(data,6), size(data,7)], precision);
             % function-calls:
             for NR=1:size(data,7)
                 for NI=1:size(data,6)
                     for channel=1:size(data,5) 
-                        newdata(:,:,:,:,channel,NI,NR) = reco_zero_filling( data(:,:,:,:,channel,NI,NR) , Reco, map(NI, NR), signal_position );                       
+                        newdata(:,:,:,:,channel,NI,NR) = reco_zero_filling( data(:,:,:,:,channel,NI,NR) , Reco, map(NI, NR), signal_position);                       
                     end
                 end
             end
@@ -342,6 +357,7 @@ for part=1:length(recopart)
             % init: zero-Matrix in correct precision
             newdata_dims=[1 1 1 1];
             newdata_dims(1:length(Reco.RECO_size))=Reco.RECO_size;
+            
             newdata=zeros([newdata_dims, size(data,5), size(data,6), size(data,7)], precision);
             % function-calls:
             for NR=1:size(data,7)
@@ -395,14 +411,20 @@ for part=1:length(recopart)
                 RECO_transposition=Reco.RECO_transposition(1);
                 % calculate additional variables:
 
+
+                % Added by David to process EPSI
+                if ~isempty(varargin)
+                if isempty(strfind(varargin{1},'EPSI'))
                 % start process
-                if RECO_transposition > 0
-                    ch_dim1=mod(RECO_transposition, length(size(data(:,:,:,:,1,1,1))) )+1;
-                    ch_dim2=RECO_transposition-1+1;
-                    new_order=1:4;
-                    new_order(ch_dim1)=ch_dim2;
-                    new_order(ch_dim2)=ch_dim1;
-                    data=permute(data, [new_order, 5, 6, 7]);
+                    if RECO_transposition > 0
+                        ch_dim1=mod(RECO_transposition, length(size(data(:,:,:,:,1,1,1))) )+1;
+                        ch_dim2=RECO_transposition-1+1;
+                        new_order=1:4;
+                        new_order(ch_dim1)=ch_dim2;
+                        new_order(ch_dim2)=ch_dim1;
+                        data=permute(data, [new_order, 5, 6, 7]);
+                    end
+                end
                 end
                 clear RECO_transposition;
                 
@@ -566,6 +588,11 @@ if ~( isequal(size(frame), Reco.RECO_ft_size ) )
 
     % import variables:
     RECO_ft_size=Reco.RECO_ft_size;
+    
+%     % Added by David to process EPSI
+%     if contains(EPSIt,'EPSI')
+%         RECO_ft_size = [RECO_ft_size(2), RECO_ft_size(1), RECO_ft_size(3)];
+%     end
 
     % check if ft_size is correct:
     for i=1:length(RECO_ft_size)
@@ -580,8 +607,10 @@ if ~( isequal(size(frame), Reco.RECO_ft_size ) )
     % calculate additional variables
     dims=[size(frame,1), size(frame,2), size(frame,3), size(frame,4)];
 
-    % start process
+    
 
+    % start process
+    
     %Dimensions of frame and RECO_ft_size doesn't match? -> zerofilling
     if ~( sum( size(frame)==RECO_ft_size )==length(RECO_ft_size) )
         newframe=zeros(RECO_ft_size);

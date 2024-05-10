@@ -291,10 +291,10 @@ methods
               
        if image
            out_obj=ImageDataObject(obj);
-           out_obj.data=bruker_Reco(recopart, obj.data, obj.Reco, input{:});
+           out_obj.data=bruker_Reco(recopart, obj.data, obj.Reco, obj.Acqp.ACQ_method, input{:});
        else
            out_obj=obj;
-           out_obj.data=bruker_Reco(recopart, obj.data, obj.Reco, input{:});
+           out_obj.data=bruker_Reco(recopart, obj.data, obj.Reco, obj.Acqp.ACQ_method, input{:});
        end
     end
 

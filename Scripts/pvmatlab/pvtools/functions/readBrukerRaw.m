@@ -551,7 +551,13 @@ function [ data , addInfo] = readBrukerRawFromPv360(Acqp, Method, varargin)
     if fid_proc
         [ data{1} ] = readFidProcFile(Acqp, paramStruct, path_to_dataFile, specified_NRs, precision, endian);
     elseif (length(specified_Jobs)==1 && ~(specified_Jobs(1)==-1) || length(specified_Jobs)~=1 )
-        [ data ] = readJobFiles(paramStruct, path_to_dataFile, specified_Jobs, precision, endian);
+        % Added by David to account for EPI images!!!
+        if ~isempty(strfind(Acqp.ACQ_method,'EPI'))
+            paramStruct.ACQ_jobs{1,1} = paramStruct.PVM_EncMatrix(1)*2;
+            [ data ] = readJobFiles(paramStruct, path_to_dataFile, specified_Jobs, precision, endian);
+        else
+            [ data ] = readJobFiles(paramStruct, path_to_dataFile, specified_Jobs, precision, endian);
+        end
     else
         error('Your AcqpFile has an unallowed job-description, or you specification was not correct');
     end    
@@ -719,6 +725,27 @@ function [ data ] = readFidProcFile(Acqp, paramStruct, path_to_dataFile, specifi
         end
     end    
     
+    % Added by David to try to process EPSI images
+    
+
+    if ~isempty(strfind(Acqp.ACQ_method,'EPSI'))
+        paramStruct.ACQ_size = [paramStruct.ACQ_size(1)/paramStruct.PVM_EncMatrix(1)*paramStruct.ACQ_size(2), paramStruct.PVM_EncMatrix(1), paramStruct.PVM_EncMatrix(2)];
+    end
+
+
     data = readfidFile(paramStruct, path_to_dataFile, isComplexRaw, specified_NRs, ...
         precision, format, bits, endian, numReceivers);
+
+    if ~isempty(strfind(Acqp.ACQ_method,'EPSI'))
+        dsi = size(data);
+        dd = reshape(data, 1, dsi(2)*dsi(3));
+        dd2 = reshape(dd, paramStruct.ACQ_size(2),paramStruct.ACQ_size(1)/2,paramStruct.ACQ_size(3));
+        dd3 = permute(dd2,[2,1,3]);
+    
+        data = reshape(dd3, dsi);
+    end
+
+
+
+
 end

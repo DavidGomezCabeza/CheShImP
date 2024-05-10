@@ -424,12 +424,12 @@ methods (Access=protected)
            error('Can''t find method-path in .Filespath'); 
         end % end read MEthod     
         
-        try
+%         try
             obj=obj.calcKData(frameObj.data, 'useMethod', obj.useMethod);
             clear('frameObj');
-        catch
-            error('It''s not possible to sort your data to kspace. Perhaps the acqusition method is not supported.');
-        end
+%         catch
+%             error('It''s not possible to sort your data to kspace. Perhaps the acqusition method is not supported.');
+%         end
         % read precision & change if neccessary:
         if strcmpi(dataPrecision, 'double')
             obj.data=double(obj.data);

@@ -93,10 +93,21 @@ function [ data] = convertRawToFrame( data, Acqp, varargin)
     numSelectedReceivers=size(data,1);
     
     % Calculating number of elements in higher dimensions
-    numDataHighDim=prod(ACQ_size(2:end));    
+      
 
     % Convert if complex: to blockSize of a complex Matrix and change
     % ACQ_size(1)
+
+    if ~isempty(strfind(Acqp.ACQ_method,'EPSI'))
+        if complexfid
+            ACQ_size = [ACQ_size(2)*2, ACQ_size(1)/2, ACQ_size(3)];
+        else
+            ACQ_size = [ACQ_size(2), ACQ_size(1), ACQ_size(3)];
+        end
+    end
+
+    numDataHighDim=prod(ACQ_size(2:end));  
+
     if complexfid
         scanSize(1)=ACQ_size(1)/2;
     else
@@ -105,8 +116,16 @@ function [ data] = convertRawToFrame( data, Acqp, varargin)
 
     %% Start resort:
     
-    
-        
+    % Added by David to handle EPI images
+    if strcmp(varargin{1}.Method, 'Bruker:EPI')
+        scanSize = varargin{1}.PVM_EpiMatrix(1); % Maybe it is 2?
+    end
+       
+
+
+    % 
+
+
     if ACQ_dim>1
 
         % Permuting receiver and read direction

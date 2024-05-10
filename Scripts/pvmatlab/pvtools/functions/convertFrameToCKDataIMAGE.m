@@ -199,7 +199,17 @@ function [ data ] = convertFrameToCKDataIMAGE( data, Acqp, varargin )
        
        %%
        
-       
+       % Added by David to handle EPI images
+       if ~isempty(strfind(Acqp.ACQ_method,'EPSI'))
+            scanSize = varargin{1}.PVM_EpiMatrix(1); % maybe it is 2?
+            readStartIndex=ckSize(1)-scanSize + 1;
+       end
+       if ~isempty(strfind(Acqp.ACQ_method,'EPI'))
+            scanSize = varargin{1}.PVM_EpiMatrix(1); % maybe it is 2?
+            readStartIndex=ckSize(1)-scanSize + 1;
+       end
+
+
        % Reshape & store
        switch ACQ_dim
            case 1

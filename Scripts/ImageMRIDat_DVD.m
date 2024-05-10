@@ -360,7 +360,11 @@ imm.YData = [1   800];
     end
 
 % Compute the ppm axix for the plots
-bw = imageObj2.Method.PVM_SpecSW(1);
+try
+    bw = imageObj2.Method.PVM_SpecSW(1);
+catch
+    bw = imageObj2.Method.SpecBandPpm(1);
+end
 bwc = imageObj2.Method.PVM_FrqWorkPpm(1);
 
    
@@ -689,8 +693,7 @@ function pushbutton3_Callback(hObject, eventdata, handles)
     
     
     if ~strcmp(lower(fidfile(end-3:end)),'.dcm')
-        f = warndlg('DICOM file NOT selected! Image will be reconstructed from FID file. This is NOT the preferred option! If more than one plane is acquired, only the last one acquired will be displayed!');
-        waitfor(f)
+        
 
         filess = dir(fullfile(join([foldpath, '\pdata\1'],'')));
         for k = 3:size(filess)
@@ -700,17 +703,41 @@ function pushbutton3_Callback(hObject, eventdata, handles)
         end
 
         kdataObj = CKDataObjectIMAGE(foldpath);
-        kdataObj = kdataObj.readReco;
-        imageObj=kdataObj.reco('all', 'image');
 
-        handles = guidata(hObject);
-        handles.edit2.String = join([foldpath, fidfile],'');
-        Y = mat2gray(imageObj.data(:,:,1,1,1,end)');
-        axes(handles.FullImage)
-        imshow(Y,[])
-       
-        handles.GUIDataAll.MRIImage = Y;
-        guidata(hObject, handles);
+
+        if strcmp(kdataObj.Acqp.ACQ_protocol_name, 'EPI')
+            f = warndlg('Sorry, but processing of EPI images is still not supported. We are working on it');
+            waitfor(f)
+
+            % Need to figure out why the processing gives folding
+            % artifacts, while when done in ParaVision it doesnt. 
+            
+            Y = zeros(size(kdataObj.data));
+            handles = guidata(hObject);
+            handles.edit2.String = join([foldpath, fidfile],'');
+            axes(handles.FullImage)
+            imshow(Y,[])
+           
+            handles.GUIDataAll.MRIImage = Y;
+            guidata(hObject, handles);
+
+        else
+            f = warndlg('DICOM file NOT selected! Image will be reconstructed from FID file. This is NOT the preferred option! If more than one plane is acquired, only the last one acquired will be displayed!');
+            waitfor(f)
+    
+            kdataObj = kdataObj.readReco;
+            imageObj=kdataObj.reco('all', 'image');
+    
+    
+            handles = guidata(hObject);
+            handles.edit2.String = join([foldpath, fidfile],'');
+            Y = mat2gray(imageObj.data(:,:,1,1,1,end)');
+            axes(handles.FullImage)
+            imshow(Y,[])
+           
+            handles.GUIDataAll.MRIImage = Y;
+            guidata(hObject, handles);
+        end
 
     else
 
@@ -1469,7 +1496,25 @@ xx = handles.GUIDataAll.x2;
 yy = handles.GUIDataAll.y2;
 FIDdat = handles.GUIDataAll.FIDDat.data;
 
-timfid = handles.GUIDataAll.FIDDat.Method.PVM_SpecAcquisitionTime;
+
+if isempty(strfind(handles.GUIDataAll.FIDDat.Acqp.ACQ_method,'EPSI'))
+    timfid = handles.GUIDataAll.FIDDat.Method.PVM_SpecAcquisitionTime;
+else
+    str = readlines(join([handles.GUIDataAll.CSIgenpath, '\visu_pars'],''));
+    mm = [];
+    for i = 1:length(str)
+        if contains(str(i), 'VisuAcqScanTime')
+            mm = char(str(i));
+            break
+        end
+    end
+    tt = mm(strfind(mm,'=')+1:end);
+
+    timfid = str2double(tt)/10000;
+
+
+
+end
 tims = linspace(0, timfid, length(real(FIDdat(:,yy,xx,1,1,1,str2num(handles.TimePoints.String(handles.TimePoints.Value,:))))));
 
 
@@ -1845,6 +1890,8 @@ function PivotEdit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of PivotEdit as text
 %        str2double(get(hObject,'String')) returns contents of PivotEdit as a double
+
+
 
 
 % --- Executes during object creation, after setting all properties.

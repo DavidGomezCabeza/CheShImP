@@ -14,7 +14,7 @@ function [imageObj3, sizz, epc, ephci, siss, phv, pap, phma, dsz, ph1, pivotppm,
         acqSizes=bruker_getAcqSizes(rawObj.Acqp, rawObj.Method);
     end
 
-    
+ if isempty(strfind(rawObj.Acqp.ACQ_method,'EPSI'))   
     try
         fileID = fopen(join([foldpath,'\fid_proc.64'],''),'r');
         fidFile=fread(fileID, 'float64');
@@ -40,7 +40,9 @@ function [imageObj3, sizz, epc, ephci, siss, phv, pap, phma, dsz, ph1, pivotppm,
     
     catch
     end
-
+fidFile2 = [];
+fidFile3 = [];
+ end
 
     numPhases=acqSizes(2);
     % Create a FrameDataObject from the imported RawDataObject
@@ -66,6 +68,17 @@ function [imageObj3, sizz, epc, ephci, siss, phv, pap, phma, dsz, ph1, pivotppm,
     kdataObj2 = CKDataObject(frameObj);
 
     kdataObj2 = kdataObj2.readReco;
+
+
+    if ~isempty(strfind(rawObj.Acqp.ACQ_method,'EPSI')) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% THIS MIGHT NOT BE POSSIBLE
+        kdataObj.data = permute(kdataObj.data,[1,3,2]);
+        kdataObj2.data = permute(kdataObj2.data,[1,3,2]);
+    end
+
+
+
+
+
 
     imageObj3=kdataObj2.reco('quadrature');
     sizz = size(imageObj3.data);
@@ -269,7 +282,11 @@ function [imageObj3, sizz, epc, ephci, siss, phv, pap, phma, dsz, ph1, pivotppm,
                     D = diff( E, 1 );
                     W = spdiags(Weight, 0, L, L );
                     C = chol( W + 1600 * D' * D );
-                    EntropyBaseLine = C\( C'\( Weight.* Rpre' ) );
+                    try
+                        EntropyBaseLine = C\( C'\( Weight.* Rpre' ) );
+                    catch
+                        EntropyBaseLine = zeros(length(Rpre),1);
+                    end
 
                     R = ww - EntropyBaseLine;
 

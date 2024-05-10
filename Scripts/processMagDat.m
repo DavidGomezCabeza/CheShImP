@@ -16,6 +16,12 @@ function [rawObj, numSlices, numReps, acqSizes, fidFile2, fidFile3, numPhases, f
     end
 
 
+    if ~isempty(strfind(rawObj.Acqp.ACQ_method,'EPSI'))
+        acqSizes = [acqSizes(1)/rawObj.Method.PVM_EncMatrix(1)*rawObj.Method.SpecSize, rawObj.Method.PVM_EncMatrix(1), rawObj.Method.PVM_EncMatrix(2)];
+%         [paramStruct.ACQ_size(1)/paramStruct.PVM_EncMatrix(1)*paramStruct.ACQ_size(2), paramStruct.PVM_EncMatrix(1), paramStruct.PVM_EncMatrix(2)];
+    end
+
+
 
 %     fileID = fopen(join([foldpath,'\rawdata.job0'],''),'r');
 %     if strcmp(rawObj.Acqp.ACQ_word_size, '_32_BIT')
@@ -29,6 +35,7 @@ function [rawObj, numSlices, numReps, acqSizes, fidFile2, fidFile3, numPhases, f
 %     end
 %     fclose(fileID);
     
+ if isempty(strfind(rawObj.Acqp.ACQ_method,'EPSI'))
     try
         fileID = fopen(join([foldpath,'\fid_proc.64'],''),'r');
         fidFile=fread(fileID, 'float64');
@@ -54,7 +61,11 @@ function [rawObj, numSlices, numReps, acqSizes, fidFile2, fidFile3, numPhases, f
     
     catch
     end
+ else
 
+fidFile2 = [];
+fidFile3 = [];
+ end
 
     
 %     if acqSizes(2) ~= acqSizes(3)
@@ -87,6 +98,13 @@ function [rawObj, numSlices, numReps, acqSizes, fidFile2, fidFile3, numPhases, f
 %     kdataObj2.data = datTmp;
 
     kdataObj2 = kdataObj2.readReco;
+
+    if ~isempty(strfind(rawObj.Acqp.ACQ_method,'EPSI')) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% THIS MIGHT NOT BE POSSIBLE
+        kdataObj.data = permute(kdataObj.data,[1,3,2]);
+        kdataObj2.data = permute(kdataObj2.data,[1,3,2]);
+    end
+
+
     FIDdat = kdataObj2.data;
     % Magnitude
     imageObj=kdataObj2.reco('quadrature');
@@ -95,7 +113,7 @@ function [rawObj, numSlices, numReps, acqSizes, fidFile2, fidFile3, numPhases, f
 
   
 %     imageObj=imageObj.reco('FT');
-    imageObj.data = fft(imageObj.data);
+    imageObj.data = fft(imageObj.data); % NEED TO CHECK IF FOR EPSI WE HAVE SPATIAL DIMENSIONS FOURIER TRANSFORMED OR NOT
     imageObj=imageObj.reco('phase_corr_pi');
     imageObj=imageObj.reco('cutoff');
     imageObj=imageObj.reco('scale_phase_channels');
