@@ -807,11 +807,21 @@ function pushbutton3_Callback(hObject, eventdata, handles)
         impix = size(handles.GUIDataAll.MRIImage);
 
         if impix(1) == impix(2)
-            xb = ([0 FOVSizeCSI(2) FOVSizeCSI(2) 0]+PosGen(1))*impix(1)/handles.GUIDataAll.MRIImageSize(1);
-            yb = ([0 0 FOVSizeCSI(3) FOVSizeCSI(3)]+PosGen(2))*impix(2)/handles.GUIDataAll.MRIImageSize(2);
+            if isempty(strfind(handles.GUIDataAll.FIDDat.Acqp.ACQ_method,'EPSI'))
+                xb = ([0 FOVSizeCSI(2) FOVSizeCSI(2) 0]+PosGen(1))*impix(1)/handles.GUIDataAll.MRIImageSize(1);
+                yb = ([0 0 FOVSizeCSI(3) FOVSizeCSI(3)]+PosGen(2))*impix(2)/handles.GUIDataAll.MRIImageSize(2);
+            else % To process EPSI
+                xb = ([0 FOVSizeCSI(1) FOVSizeCSI(1) 0]+PosGen(1))*impix(1)/handles.GUIDataAll.MRIImageSize(1);
+                yb = ([0 0 FOVSizeCSI(3) FOVSizeCSI(3)]+PosGen(2))*impix(2)/handles.GUIDataAll.MRIImageSize(2);
+            end
         else
-            yb = ([0 FOVSizeCSI(2) FOVSizeCSI(2) 0]+PosGen(1))*impix(1)/handles.GUIDataAll.MRIImageSize(1);
-            xb = ([0 0 FOVSizeCSI(3) FOVSizeCSI(3)]+PosGen(2))*impix(2)/handles.GUIDataAll.MRIImageSize(2);
+            if isempty(strfind(handles.GUIDataAll.FIDDat.Acqp.ACQ_method,'EPSI'))
+                yb = ([0 FOVSizeCSI(2) FOVSizeCSI(2) 0]+PosGen(1))*impix(1)/handles.GUIDataAll.MRIImageSize(1);
+                xb = ([0 0 FOVSizeCSI(3) FOVSizeCSI(3)]+PosGen(2))*impix(2)/handles.GUIDataAll.MRIImageSize(2);
+            else % To process EPSI
+                yb = ([0 FOVSizeCSI(1) FOVSizeCSI(1) 0]+PosGen(1))*impix(1)/handles.GUIDataAll.MRIImageSize(1);
+                xb = ([0 0 FOVSizeCSI(3) FOVSizeCSI(3)]+PosGen(2))*impix(2)/handles.GUIDataAll.MRIImageSize(2);
+            end
         end
 
         % Check if it is using the turbo localiser so we can flip the x

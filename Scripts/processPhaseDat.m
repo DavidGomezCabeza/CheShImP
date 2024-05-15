@@ -71,8 +71,10 @@ fidFile3 = [];
 
 
     if ~isempty(strfind(rawObj.Acqp.ACQ_method,'EPSI')) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% THIS MIGHT NOT BE POSSIBLE
-        kdataObj.data = permute(kdataObj.data,[1,3,2]);
-        kdataObj2.data = permute(kdataObj2.data,[1,3,2]);
+        if rawObj.Method.PVM_EpiTrajAdjReadvec(1) == 0
+            kdataObj.data = permute(kdataObj.data,[1,3,2,4,5,6,7,8]);
+            kdataObj2.data = permute(kdataObj2.data,[1,3,2,4,5,6,7,8]);
+        end
     end
 
 
