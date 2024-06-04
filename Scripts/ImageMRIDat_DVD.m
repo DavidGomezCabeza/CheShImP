@@ -731,7 +731,7 @@ function pushbutton3_Callback(hObject, eventdata, handles)
     
             handles = guidata(hObject);
             handles.edit2.String = join([foldpath, fidfile],'');
-            Y = mat2gray(imageObj.data(:,:,1,1,1,end)');
+            Y = mat2gray(imageObj.data(:,:,1,1,1,end));
             axes(handles.FullImage)
             imshow(Y,[])
            
