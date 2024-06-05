@@ -136,7 +136,7 @@ fidFile3 = [];
     end
 
     phma = zeros(siss(2), siss(3), pap);
-    ph1v = -40:4:40;
+    ph1v = -4:1:20;
     
     dsz = length(imageObj2.data(:,1,1,1,1,1,1));
     ph1 = zeros(siss(2), siss(3), pap);
@@ -212,9 +212,6 @@ fidFile3 = [];
 
 %                         phdat = real(imageObj3.data(:,i,j,1,1,1,z) .* exp(sqrt(-1)*phv2(k) +ph1(i,j,z).*((-pivot(i,j,z):-pivot(i,j,z)+dsz-1)/dsz)' ));
 %                         phdat2 = phdat+abs(min(phdat(max([1,maxpik-round(length(xx)*0.03)]):min([dsz, maxpik+round(length(xx)*0.03)]))));
-
-
-
 
 %                         ccc3(k,2) = sum(phdat2(phdat2<0)/max(phdat2));
                         
